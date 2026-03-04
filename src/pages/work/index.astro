@@ -70,7 +70,7 @@ import { workData } from '../../data/work';
             {item.video ? (
               <div class="accordion-visual">
                 <div class="video-wrap" data-src={item.video}>
-                  <video src={item.video} autoplay loop muted playsinline />
+                  <video src={item.video} autoplay loop muted playsinline preload="none" />
                 </div>
               </div>
             ) : item.images && item.images.length > 0 && (
