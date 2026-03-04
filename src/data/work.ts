@@ -78,7 +78,7 @@ export const workData: WorkItem[] = [
       {
         title: 'Aligning speed with match quality',
         description:
-          'Redesigned teacher onboarding for a global classroom video platform, resolving friction between fast signup and high-quality availability data. Re-sequenced the flow to align user incentives with system needs. Improving conversion and downstream match performance without modifying the matching algorithm.',
+          'Redesigned teacher onboarding for a global classroom video platform, resolving friction between fast signup and high-quality availability data. Re-sequenced the flow to balance fast signup with the availability data needed to improve conversion and match quality.',
       },
     ],
     stats: [
