@@ -61,7 +61,7 @@ export const workData: WorkItem[] = [
       {
         title: 'Unblocking legacy merchants at scale',
         description:
-          "Designed the Custom Liquid section that helped legacy merchants migrate highly customized abandoned checkout emails to Shopify’s new Automations framework. Built a from-scratch “code your own” email experience, plus inline code blocks to inject custom code in the builder UI.",
+          "Designed the Custom Liquid section that helped legacy merchants migrate highly customized abandoned checkout emails to Shopify’s new Automations framework. Built a code-your-own email workflow with live preview, plus a new Custom Code block in the builder.",
       },
     ],
     stats: [
