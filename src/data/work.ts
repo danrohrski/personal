@@ -78,7 +78,7 @@ export const workData: WorkItem[] = [
       {
         title: 'Aligning speed with match quality',
         description:
-          'Redesigned teacher onboarding for a global classroom video platform. Made signup efficient while collecting better availability data to improve conversion and match quality.',
+          'Redesigned teacher onboarding for a global classroom video platform. Part of a broader product overhaul, it streamlined signup while improving availability data to boost conversion and match quality.',
       },
     ],
     stats: [
