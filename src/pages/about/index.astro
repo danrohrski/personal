@@ -1,0 +1,180 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+---
+
+<BaseLayout title="About — Dan Rohr" activePage="about">
+  <div class="about-layout">
+    <div class="about-left">
+      <p class="about-heading">Hello 👋</p>
+      <p class="about-paragraph">
+        Over the past decade, I've taken young products and shaped them into
+        enterprise solutions that are a joy to use. I've invested time towards
+        understanding, empathizing, and learning from real customers. I've
+        redesigned product architecture, built and maintained design systems,
+        crafted intuitive onboarding, and helped guide customers with thoughtful
+        writing.
+      </p>
+      <p class="about-paragraph">
+        When not behind a screen, you'll find me outdoors with my kiddos,
+        watching documentaries, and roasting coffee.
+      </p>
+      <p class="about-closing">Thanks for stopping by.</p>
+      <div class="about-links">
+        <a href="mailto:contact@danrohr.com" class="underline">contact@danrohr.com</a>
+        <a href="https://linkedin.com" class="underline" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+      </div>
+    </div>
+    <div class="about-right">
+      <div class="about-image-frame">
+        <video
+          class="about-image"
+          src="/smile.mp4"
+          autoplay
+          muted
+          playsinline
+          disablepictureinpicture
+        ></video>
+      </div>
+    </div>
+  </div>
+</BaseLayout>
+
+<style is:global>
+  .main:has(.about-layout) {
+    max-width: 100%;
+    padding: 0;
+  }
+  .main:has(.about-layout) .nav {
+    padding-left: var(--padding-x);
+    padding-right: var(--padding-x);
+  }
+  .main:has(.about-layout) .nav-link {
+    color: rgba(244, 244, 242, 0.75);
+  }
+  .main:has(.about-layout) .nav-link:hover {
+    color: var(--color-bg);
+  }
+  .main:has(.about-layout) .nav-link:not(.nav-link--active-work):not(.nav-link--active-about):hover {
+    background: rgba(244, 244, 242, 0.05);
+  }
+  .nav-link--active-about {
+    background: rgba(244, 244, 242, 0.15) !important;
+    color: var(--color-bg) !important;
+  }
+</style>
+
+<style>
+  .about-layout {
+    display: grid;
+    grid-template-columns: minmax(280px, 48%) 1fr;
+    min-height: 100vh;
+    margin-top: -74px;
+  }
+
+  /* ── Left panel ── */
+  .about-left {
+    display: flex;
+    flex-direction: column;
+    padding: calc(74px + var(--intro-gap)) var(--padding-x) 2.5rem;
+    padding-left: calc(var(--padding-x) + 4px);
+  }
+
+  .about-heading {
+    font-size: var(--font-intro);
+    font-family: var(--font-serif);
+    font-weight: 370;
+    line-height: 29px;
+    letter-spacing: -1.3px;
+    color: var(--color-bg);
+    margin: 0 0 1rem;
+  }
+
+  .about-paragraph {
+    font-size: 16px;
+    font-family: var(--font-serif);
+    font-weight: 370;
+    line-height: 1.65;
+    letter-spacing: -0.3px;
+    color: var(--color-bg);
+    margin: 0 0 0.85rem;
+  }
+
+  .about-closing {
+    font-size: 16px;
+    font-family: var(--font-serif);
+    font-weight: 370;
+    line-height: 1.65;
+    letter-spacing: -0.3px;
+    color: var(--color-bg);
+    margin: 0 0 1.25rem;
+  }
+
+  .about-links {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    align-items: flex-start;
+  }
+
+  .about-links a {
+    font-size: 16px;
+    font-weight: 370;
+    color: var(--color-bg);
+  }
+
+  .about-links a:hover {
+    color: #FFCF4B;
+  }
+
+  /* ── Right panel ── */
+  .about-right {
+    position: relative;
+  }
+
+  .about-image-frame {
+    position: absolute;
+    top: 8%;
+    right: 8%;
+    bottom: 8%;
+    left: 0;
+    border-radius: 60px;
+    overflow: hidden;
+  }
+
+  .about-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center 35%;
+    display: block;
+    opacity: 0.8;
+  }
+
+  /* ── Mobile ── */
+  @media (max-width: 900px) {
+    .about-layout {
+      grid-template-columns: 1fr;
+      min-height: unset;
+      margin-top: 0;
+    }
+
+    .about-left {
+      padding: 2rem var(--padding-x) 2rem;
+    }
+
+    .about-right {
+      height: 100vw;
+      margin: 0 var(--padding-x) 32px;
+    }
+
+    .about-image-frame {
+      position: absolute;
+      inset: 0;
+      border-radius: 40px;
+      left: 0;
+      right: 0;
+      top: 0;
+      bottom: 0;
+    }
+  }
+</style>

@@ -1,0 +1,124 @@
+---
+import '../styles/global.css';
+import { ClientRouter } from 'astro:transitions';
+import Nav from '../components/Nav.astro';
+interface Props {
+  title: string;
+  activePage?: 'work' | 'about';
+}
+
+const { title, activePage = 'work' } = Astro.props;
+
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" href="/favicon.ico" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="generator" content={Astro.generator} />
+    <title>{title}</title>
+    <style is:global>
+      .main {
+        max-width: 1040px;
+        margin: 0;
+        padding: 0 var(--padding-x, 80px);
+      }
+      @media (max-width: 768px) {
+        .main {
+          padding: 0 24px;
+        }
+      }
+    </style>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Source+Serif+4:ital,wght@0,200..900;1,400&display=swap"
+      rel="stylesheet"
+    />
+    <ClientRouter />
+    <style is:global>
+      @keyframes fadeOut {
+        from { opacity: 1; }
+        to   { opacity: 0; }
+      }
+      @keyframes fadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+      }
+      /* Disable all default browser view-transition morphing */
+      ::view-transition-group(*) {
+        animation-duration: 0s;
+      }
+      ::view-transition-old(*),
+      ::view-transition-new(*) {
+        animation: none;
+        mix-blend-mode: normal;
+      }
+      /* Initial-load stagger for work page */
+      [data-initial-load] .intro {
+        animation: fadeIn 1.9s ease-out both;
+      }
+      [data-initial-load] .accordion-item {
+        opacity: 0;
+        animation: fadeIn 0.5s ease-out forwards;
+      }
+      [data-initial-load] .accordion-item:nth-child(1)  { animation-delay: 0.3s; }
+      [data-initial-load] .accordion-item:nth-child(2)  { animation-delay: 0.42s; }
+      [data-initial-load] .accordion-item:nth-child(3)  { animation-delay: 0.54s; }
+      [data-initial-load] .accordion-item:nth-child(4)  { animation-delay: 0.66s; }
+      [data-initial-load] .accordion-item:nth-child(5)  { animation-delay: 0.78s; }
+      [data-initial-load] .accordion-item:nth-child(6)  { animation-delay: 0.90s; }
+      [data-initial-load] .accordion-item:nth-child(7)  { animation-delay: 1.02s; }
+      [data-initial-load] .accordion-item:nth-child(8)  { animation-delay: 1.14s; }
+      [data-initial-load] .accordion-item:nth-child(9)  { animation-delay: 1.26s; }
+      [data-initial-load] .accordion-item:nth-child(10) { animation-delay: 1.38s; }
+      @media (prefers-reduced-motion: reduce) {
+        [data-initial-load] .intro,
+        [data-initial-load] .accordion-item {
+          animation: none;
+          opacity: 1;
+        }
+      }
+
+      /* Fade the full viewport root — sequential, no overlap, no positional jumps */
+      ::view-transition-old(root) {
+        animation: fadeOut 0.15s ease-out both;
+      }
+      ::view-transition-new(root) {
+        animation: fadeIn 0.25s ease-out 0.15s both;
+      }
+    </style>
+  </head>
+  <body>
+    <script is:inline>
+      (function () {
+        var nav = performance.getEntriesByType && performance.getEntriesByType('navigation')[0];
+        if (nav && (nav.type === 'navigate' || nav.type === 'reload')) {
+          document.documentElement.dataset.initialLoad = 'true';
+        }
+      })();
+    </script>
+    <main class="main">
+      <Nav activePage={activePage} transition:persist="nav" />
+      <div class="page-content">
+        <slot />
+      </div>
+    </main>
+    <script>
+      document.addEventListener('astro:before-swap', () => {
+        delete document.documentElement.dataset.initialLoad;
+      });
+
+      document.addEventListener('astro:after-swap', () => {
+        const path = window.location.pathname;
+        document.querySelectorAll('.nav-link--active-work, .nav-link--active-about').forEach(el => el.classList.remove('nav-link--active-work', 'nav-link--active-about'));
+        const workLink = document.querySelector('a.nav-link[href="/work"]');
+        const aboutLink = document.querySelector('a.nav-link[href="/about"]');
+        if (path.startsWith('/work') && workLink) workLink.classList.add('nav-link--active-work');
+        if (path.startsWith('/about') && aboutLink) aboutLink.classList.add('nav-link--active-about');
+      });
+    </script>
+  </body>
+</html>

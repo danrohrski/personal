@@ -1,0 +1,71 @@
+---
+interface Props {
+  activePage: 'work' | 'about';
+}
+
+const { activePage } = Astro.props;
+---
+
+<nav class="nav" aria-label="Main navigation">
+  <a
+    href="/work"
+    class:list={[
+      'nav-link',
+      { 'nav-link--active-work': activePage === 'work' }
+    ]}
+  >
+    Work
+  </a>
+  <a
+    href="/about"
+    class:list={[
+      'nav-link',
+      { 'nav-link--active-about': activePage === 'about' }
+    ]}
+  >
+    About
+  </a>
+</nav>
+
+<style>
+  .nav {
+    display: flex;
+    gap: 8px;
+    padding-top: var(--padding-top, 30px);
+    font-size: var(--font-nav, 16px);
+    font-family: var(--font-serif);
+    position: relative;
+    z-index: 10;
+  }
+
+  .nav-link {
+    color: var(--color-text);
+    padding: 10px 12px;
+    border-radius: 30px;
+    font-weight: 390;
+    transition: background 0.2s ease-out, color 0.2s ease-out;
+  }
+
+  .nav-link:hover {
+    color: var(--color-text);
+  }
+
+  .nav-link:not(.nav-link--active-work):not(.nav-link--active-about):hover {
+    background: rgba(255, 255, 255, 0.5);
+  }
+
+  /* Active = pill/button style */
+  .nav-link--active-work,
+  .nav-link--active-about {
+    text-decoration: none;
+    background: var(--color-accordion);
+    border-radius: 30px;
+  }
+
+  @media (max-width: 640px) {
+    .nav {
+      font-size: 16px;
+      gap: 1rem;
+    }
+  }
+</style>

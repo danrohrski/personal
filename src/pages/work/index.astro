@@ -1,0 +1,519 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { workData } from '../../data/work';
+---
+
+<BaseLayout title="Work — Dan Rohr" activePage="work">
+  <p class="intro">
+    I'm Dan, a senior product designer known for designing systems that help
+    people make better decisions. Most recently at{' '}
+    <a href="https://shopify.com" class="underline">Shopify</a>, I worked on
+    foundational systems that help its 5 million merchants plan, execute, and
+    evaluate their marketing efforts.
+  </p>
+
+  <div id="lightbox" class="lightbox" role="dialog" aria-modal="true" aria-label="Image preview">
+    <img id="lightbox-img" class="lightbox-img" src="" alt="" />
+    <video id="lightbox-video" class="lightbox-img lightbox-video" src="" playsinline loop controls></video>
+  </div>
+
+  <div class="accordion-list" role="tablist" aria-label="Work experience">
+    {workData.map((item, i) => (
+      <div
+        class="accordion-item"
+        data-index={i}
+        data-expanded="false"
+      >
+        <button
+          type="button"
+          class="accordion-trigger"
+          aria-expanded="false"
+          aria-controls={`accordion-panel-${i}`}
+          id={`accordion-trigger-${i}`}
+        >
+          <span class="accordion-label">
+            <span class="accordion-company">{item.subtitle ?? item.dates}</span>
+            <span class="accordion-sep">/</span>
+            <span class="accordion-dates">{item.company}</span>
+          </span>
+          <span class="accordion-icon" aria-hidden="true">
+            <span class="accordion-icon-h"></span>
+            <span class="accordion-icon-v"></span>
+          </span>
+        </button>
+        <div
+          id={`accordion-panel-${i}`}
+          class="accordion-panel"
+          role="region"
+          aria-labelledby={`accordion-trigger-${i}`}
+          aria-hidden="true"
+        >
+          <div class="accordion-content">
+            <div class="accordion-projects">
+              {item.projects.map((p) => (
+                <div class="project">
+                  <h4 class="project-title">{p.title}</h4>
+                  <p class="project-description">{p.description}</p>
+                </div>
+              ))}
+              {item.stats && item.stats.length > 0 && (
+                <div class="project-stats">
+                  {item.stats.map((s) => (
+                    <div class="stat">
+                      <span class="stat-label">{s.label}</span>
+                      <span class="stat-value">{s.value}</span>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+            {item.video ? (
+              <div class="accordion-visual">
+                <div class="video-wrap" data-src={item.video}>
+                  <video src={item.video} autoplay loop muted playsinline />
+                </div>
+              </div>
+            ) : item.images && item.images.length > 0 && (
+              <div class="accordion-visual">
+                <div class="card-stack">
+                  {item.images.map((src) => (
+                    <div class="card" data-src={src}>
+                      <img src={src} alt="" loading="lazy" />
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+    ))}
+  </div>
+</BaseLayout>
+
+<script>
+  function initAccordions() {
+    document.querySelectorAll('.accordion-item').forEach((item) => {
+      const trigger = item.querySelector('.accordion-trigger');
+      const panel = item.querySelector('.accordion-panel');
+
+      trigger?.addEventListener('click', () => {
+        const list = item.closest('.accordion-list');
+        const wasExpanded = item.dataset.expanded === 'true';
+
+        list?.querySelectorAll('.accordion-item').forEach((other) => {
+          if (other !== item) {
+            other.dataset.expanded = 'false';
+            const otherTrigger = other.querySelector('.accordion-trigger');
+            const otherPanel = other.querySelector('.accordion-panel');
+            otherTrigger?.setAttribute('aria-expanded', 'false');
+            otherPanel?.setAttribute('aria-hidden', 'true');
+          }
+        });
+
+        if (wasExpanded) {
+          item.dataset.expanded = 'false';
+          trigger?.setAttribute('aria-expanded', 'false');
+          panel?.setAttribute('aria-hidden', 'true');
+        } else {
+          item.dataset.expanded = 'true';
+          trigger?.setAttribute('aria-expanded', 'true');
+          panel?.setAttribute('aria-hidden', 'false');
+        }
+      });
+    });
+  }
+
+  function initLightbox() {
+    const lightbox = document.getElementById('lightbox');
+    const lightboxImg = document.getElementById('lightbox-img') as HTMLImageElement | null;
+    const lightboxVideo = document.getElementById('lightbox-video') as HTMLVideoElement | null;
+    if (!lightbox || !lightboxImg || !lightboxVideo) return;
+
+    function closeLightbox() {
+      lightbox!.classList.remove('is-open');
+      document.body.style.overflow = '';
+      lightboxVideo!.pause();
+      lightboxVideo!.src = '';
+      lightboxImg!.src = '';
+    }
+
+    document.querySelectorAll('.card').forEach((card) => {
+      card.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const src = (card as HTMLElement).dataset.src || '';
+        lightboxImg.src = src;
+        lightboxImg.style.display = 'block';
+        lightboxVideo.style.display = 'none';
+        lightbox.classList.add('is-open');
+        document.body.style.overflow = 'hidden';
+      });
+    });
+
+    document.querySelectorAll('.video-wrap').forEach((wrap) => {
+      wrap.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const src = (wrap as HTMLElement).dataset.src || '';
+        lightboxVideo.src = src;
+        lightboxVideo.style.display = 'block';
+        lightboxImg.style.display = 'none';
+        lightboxVideo.play();
+        lightbox.classList.add('is-open');
+        document.body.style.overflow = 'hidden';
+      });
+    });
+
+    lightboxVideo.addEventListener('click', (e) => e.stopPropagation());
+    lightbox.addEventListener('click', closeLightbox);
+  }
+
+  document.addEventListener('astro:page-load', () => {
+    initAccordions();
+    initLightbox();
+  });
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+      document.getElementById('lightbox')?.classList.remove('is-open');
+      (document.getElementById('lightbox-video') as HTMLVideoElement | null)?.pause();
+      document.body.style.overflow = '';
+    }
+  });
+</script>
+
+<style>
+  .intro {
+    font-size: var(--font-intro);
+    font-family: var(--font-serif);
+    font-weight: 370;
+    line-height: 29px;
+    letter-spacing: -1.3px;
+    opacity: 0.85;
+    margin: var(--intro-gap) 0 0;
+    max-width: 700px;
+    padding-left: 4px;
+  }
+
+  .accordion-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--accordion-gap);
+    margin-top: var(--intro-gap);
+    padding-bottom: 4rem;
+  }
+
+  .accordion-item {
+    border-radius: var(--accordion-radius);
+    background: var(--color-accordion);
+    transition: background 0.3s ease-out;
+    overflow: hidden;
+  }
+
+  .accordion-item:hover,
+  .accordion-item[data-expanded='true'] {
+    background: var(--color-accordion-hover);
+  }
+
+  .accordion-trigger {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    height: 54px;
+    padding: 0 24px 0 28px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font: inherit;
+    color: inherit;
+    text-align: left;
+  }
+
+  .accordion-label {
+    display: flex;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: 6px;
+    line-height: 1;
+  }
+
+  .accordion-company {
+    font-size: var(--font-company);
+    font-family: var(--font-serif);
+    font-weight: 370;
+    line-height: 1;
+  }
+
+  .accordion-sep {
+    font-size: var(--font-company);
+    font-family: var(--font-serif);
+    line-height: 1;
+    color: #959491;
+    padding: 0 2px;
+  }
+
+  .accordion-dates {
+    font-size: var(--font-company);
+    font-family: var(--font-serif);
+    line-height: 1;
+    color: #959491;
+  }
+
+  .accordion-icon {
+    position: relative;
+    flex-shrink: 0;
+    width: 18px;
+    height: 18px;
+  }
+
+  .accordion-icon-h,
+  .accordion-icon-v {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    background: #959491;
+    transition: transform 0.4s ease-out;
+  }
+
+  .accordion-icon-h {
+    width: 14px;
+    height: 1px;
+    transform: translate(-50%, -50%);
+  }
+
+  .accordion-icon-v {
+    width: 1px;
+    height: 14px;
+    transform: translate(-50%, -50%);
+  }
+
+  .accordion-item[data-expanded='true'] .accordion-icon-v {
+    transform: translate(-50%, -50%) rotate(90deg);
+  }
+
+  .accordion-panel {
+    display: grid;
+    grid-template-rows: 0fr;
+    transition: grid-template-rows 0.75s cubic-bezier(.4, 0, .3, 1) 0.01s;
+    overflow: hidden;
+    min-height: 0;
+  }
+
+  .accordion-item[data-expanded='true'] .accordion-panel {
+    grid-template-rows: 1fr;
+  }
+
+  .accordion-panel .accordion-content {
+    min-height: 0;
+    overflow: hidden;
+  }
+
+  .accordion-item[data-expanded='false'] .accordion-content {
+    opacity: 0;
+    padding-top: 0;
+    padding-bottom: 0;
+    transition: opacity 0.3s ease-out, padding-top 0.75s cubic-bezier(.4, 0, .3, 1) 0.01s, padding-bottom 0.75s cubic-bezier(.4, 0, .3, 1) 0.01s;
+  }
+
+  .accordion-item[data-expanded='true'] .accordion-content {
+    opacity: 1;
+    padding-top: 24px;
+    transition: opacity 0.4s ease-out 0.15s, padding-top 0.75s cubic-bezier(.4, 0, .3, 1) 0.01s, padding-bottom 0.75s cubic-bezier(.4, 0, .3, 1) 0.01s;
+  }
+
+  .accordion-content {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+    padding: 0 30px 1.5rem;
+  }
+
+  .accordion-content:not(:has(.accordion-visual)) {
+    grid-template-columns: 1fr;
+  }
+
+  .accordion-projects {
+    min-width: 0;
+  }
+
+  .accordion-title {
+    font-size: var(--font-company);
+    font-family: var(--font-mono);
+    margin: 0 0 1rem;
+    font-weight: 400;
+  }
+
+  .project {
+    margin-bottom: 1rem;
+  }
+
+  .project:last-child {
+    margin-bottom: 0;
+  }
+
+  .project-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+    gap: 0.5rem 1rem;
+    margin-top: 1.5rem;
+    padding-top: 1.25rem;
+    border-top: 1px solid var(--color-accordion);
+  }
+
+  .stat {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+  }
+
+  .stat-label {
+    font-size: 11px;
+    font-family: var(--font-mono);
+    color: rgba(0, 0, 0, 0.45);
+    line-height: 1.3;
+  }
+
+  .stat-value {
+    font-size: var(--font-subtitle);
+    font-family: var(--font-mono);
+    font-weight: 300;
+    color: var(--color-text);
+    line-height: 1.3;
+  }
+
+  .project-title {
+    font-size: var(--font-intro);
+    font-family: var(--font-serif);
+    font-weight: 370;
+    letter-spacing: -1.3px;
+    line-height: 1.2;
+    margin: 0 0 0.5rem;
+  }
+
+  .project-description {
+    font-size: var(--font-subtitle);
+    font-family: var(--font-serif);
+    margin: 0;
+    line-height: 1.5;
+    color: rgba(0, 0, 0, 0.7);
+  }
+
+  .video-wrap {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: -40px;
+    transform: translateX(40px);
+    border-radius: 14px;
+    overflow: hidden;
+    cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='44' height='44' viewBox='0 0 44 44'%3E%3Ccircle cx='22' cy='22' r='22' fill='rgba(244%2C244%2C242%2C0.65)'/%3E%3Cpath d='M22 13v18M13 22h18' stroke='%23959491' stroke-width='1' stroke-linecap='round'/%3E%3C/svg%3E") 22 22, pointer;
+    box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.9);
+  }
+
+  .video-wrap video {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: top left;
+    display: block;
+    pointer-events: none;
+    transform: scale(1.15);
+    transform-origin: top left;
+  }
+
+  .lightbox-video {
+    display: none;
+    cursor: default;
+  }
+
+  /* Visual column bleeds to the right and bottom edges of the accordion */
+  .accordion-visual {
+    min-width: 0;
+    position: relative;
+    min-height: 220px;
+    margin-right: -30px;
+    margin-bottom: -1.5rem;
+    overflow: visible;
+  }
+
+  /* ── Card stack ── */
+  .card-stack {
+    position: absolute;
+    inset: 0;
+    transform: translate(40px, 40px);
+  }
+
+  .card {
+    position: absolute;
+    inset: 0;
+    border-radius: 14px;
+    overflow: hidden;
+    cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='44' height='44' viewBox='0 0 44 44'%3E%3Ccircle cx='22' cy='22' r='22' fill='rgba(244%2C244%2C242%2C0.65)'/%3E%3Cpath d='M22 13v18M13 22h18' stroke='%23959491' stroke-width='1' stroke-linecap='round'/%3E%3C/svg%3E") 22 22, pointer;
+    box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.9);
+    transition: transform 0.35s cubic-bezier(0.34, 1.3, 0.64, 1);
+  }
+
+  .card img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    pointer-events: none;
+  }
+
+  /* Backdrop fills area (lowest z), layers step toward bottom-right (masked by accordion) */
+  .card:nth-child(1) { z-index: 1; transform: translate(0px, 68px); }
+  .card:nth-child(2) { z-index: 2; transform: translate(40px, 28px);  }
+  .card:nth-child(3) { z-index: 3; transform: translate(80px, 0px); }
+
+  /* Subtle hover — splay top 2 cards ~30px to the right */
+  .card-stack:hover .card:nth-child(2) { transform: translate(70px, 28px) rotate(4deg); }
+  .card-stack:hover .card:nth-child(3) { transform: translate(130px, 0px) rotate(6deg); }
+
+  /* ── Lightbox ── */
+  .lightbox {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.82);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 999;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease;
+  }
+
+  .lightbox.is-open {
+    opacity: 1;
+    pointer-events: all;
+    cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='44' height='44' viewBox='0 0 44 44'%3E%3Ccircle cx='22' cy='22' r='22' fill='rgba(244%2C244%2C242%2C0.65)'/%3E%3Cpath d='M14 14L30 30M30 14L14 30' stroke='%234B4A49' stroke-width='1' stroke-linecap='round'/%3E%3C/svg%3E") 22 22, pointer;
+  }
+
+  .lightbox-img {
+    max-width: 88vw;
+    max-height: 88vh;
+    border-radius: 20px;
+    object-fit: contain;
+    box-shadow: 0 24px 64px rgba(0, 0, 0, 0.5);
+    transform: scale(0.88);
+    transition: transform 0.35s cubic-bezier(0.34, 1.4, 0.64, 1);
+  }
+
+  .lightbox.is-open .lightbox-img {
+    transform: scale(1);
+  }
+
+  @media (max-width: 640px) {
+    .accordion-content {
+      grid-template-columns: 1fr;
+    }
+
+    .intro {
+      font-size: 22px;
+    }
+  }
+</style>

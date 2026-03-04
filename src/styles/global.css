@@ -1,0 +1,69 @@
+/* Figma design tokens */
+:root {
+  --color-bg: #F4F4F2;
+  --color-accordion: #EDEDE8;
+  --color-white: #FDFDFC;
+  --color-accordion-hover: var(--color-white);
+  --color-link-hover: #207DFF;
+  --color-text: #1a1a1a;
+  --font-serif: 'Source Serif 4', Georgia, serif;
+  --font-mono: 'IBM Plex Mono', 'Courier New', monospace;
+  --font-nav: 16px;
+  --font-intro: 22px;
+  --font-company: 16px;
+  --font-subtitle: 14px;
+  --accordion-gap: 12px;
+  --accordion-radius: 30px;
+  --padding-x: 60px;
+  --padding-top: 30px;
+  --intro-gap: 60px;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  -webkit-font-smoothing: antialiased;
+}
+
+html {
+  font-size: 16px;
+  -webkit-font-smoothing: antialiased;
+}
+
+body {
+  margin: 0;
+  background: var(--color-bg);
+  color: var(--color-text);
+  font-family: var(--font-serif);
+  font-weight: 300;
+  line-height: 1.5;
+  transition: background-color 0.2s ease-out;
+}
+
+body:has(.about-layout) {
+  background-color: var(--color-text);
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+a:hover {
+  color: var(--color-link-hover);
+}
+
+a.underline {
+  text-decoration: none;
+  background-image: linear-gradient(currentColor, currentColor);
+  background-repeat: no-repeat;
+  background-position: 0 100%;
+  background-size: 100% 1px;
+  transition: background-size 0.3s ease, color 0.2s ease;
+}
+
+a.underline:hover {
+  background-size: 0% 1px;
+}
