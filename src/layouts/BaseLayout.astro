@@ -101,7 +101,7 @@ const { title, activePage = 'work' } = Astro.props;
       })();
     </script>
     <main class="main">
-      <Nav activePage={activePage} transition:persist="nav" />
+      <Nav activePage={activePage} />
       <div class="page-content">
         <slot />
       </div>
