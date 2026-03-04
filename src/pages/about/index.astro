@@ -149,7 +149,13 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
     object-fit: cover;
     object-position: center 35%;
     display: block;
-    opacity: 0.8;
+    opacity: 0;
+    animation: videoFadeIn 0.8s ease-out 0.2s forwards;
+  }
+
+  @keyframes videoFadeIn {
+    from { opacity: 0; }
+    to   { opacity: 0.8; }
   }
 
   /* ── Mobile ── */
