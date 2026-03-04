@@ -95,7 +95,7 @@ export const workData: WorkItem[] = [
       {
         title: 'Enterprise analytics platform',
         description:
-          "Led end-to-end design for Lucky Orange's enterprise analytics platform, re-architecting workflows across replay, heatmaps, surveys, and reporting into a cohesive, enterprise-ready experience. Built and scaled an accessible design system that improved consistency and increased delivery speed as the team grew.",
+          "Led end-to-end design for the Lucky Orange analytics platform. Re-architecting workflows across session replay, chat, surveys, and reporting into a cohesive, enterprise-ready experience. Built and scaled an accessible design system that improved consistency and increased delivery speed.",
       },
     ],
     stats: [
