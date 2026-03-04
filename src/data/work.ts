@@ -120,7 +120,7 @@ export const workData: WorkItem[] = [
       { label: 'Districts in 12mo', value: '200+' },
       { label: 'Full workflow', value: '0→1' },
     ],
-    video: '/composer2.mov',
+    video: '/composer2.mp4',
   },
   {
     company: 'Atlassian',
@@ -130,9 +130,9 @@ export const workData: WorkItem[] = [
       {
         title: 'Crafting a learning center for engineers',
         description:
-          'Led UX and information architecture for Git Guide, an educational platform helping engineers navigate complex Git concepts. Reorganized and recategorized content to better align with real developer mental models and day-to-day workflows.',
+          'While at Instrument, ed UX and information architecture for Git Guide, an educational platform helping engineers navigate complex Git concepts. Reorganized and recategorized content to better align with real developer mental models and day-to-day workflows.',
       },
     ],
-    video: '/git_walkthrough_1080b.mov',
+    video: '/git_walkthrough_1080b.mp4',
   },
 ];
