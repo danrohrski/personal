@@ -130,7 +130,7 @@ export const workData: WorkItem[] = [
       {
         title: 'Crafting a learning center for engineers',
         description:
-          'While at Instrument, ed UX and information architecture for Git Guide, an educational platform helping engineers navigate complex Git concepts. Reorganized and recategorized content to better align with real developer mental models and day-to-day workflows.',
+          'While at <a href="https://www.instrument.com/" target="_blank" rel="noopener noreferrer" class="underline">Instrument</a>, I led design for Git Guide, an educational platform helping engineers navigate complex Git concepts. Reorganized and recategorized content to better align with real developer mental models and day-to-day workflows.',
       },
     ],
     video: '/git_walkthrough_1080b.mp4',

@@ -53,7 +53,7 @@ import { workData } from '../../data/work';
               {item.projects.map((p) => (
                 <div class="project">
                   <h4 class="project-title">{p.title}</h4>
-                  <p class="project-description">{p.description}</p>
+                  <p class="project-description" set:html={p.description} />
                 </div>
               ))}
               {item.stats && item.stats.length > 0 && (
@@ -397,6 +397,7 @@ import { workData } from '../../data/work';
     line-height: 1.5;
     color: rgba(0, 0, 0, 0.7);
   }
+
 
   .video-wrap {
     position: absolute;
