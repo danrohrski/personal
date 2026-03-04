@@ -1,6 +1,5 @@
 ---
 import '../styles/global.css';
-import { ClientRouter } from 'astro:transitions';
 import Nav from '../components/Nav.astro';
 interface Props {
   title: string;
@@ -37,7 +36,6 @@ const { title, activePage = 'work' } = Astro.props;
       href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Source+Serif+4:ital,wght@0,200..900;1,400&display=swap"
       rel="stylesheet"
     />
-    <ClientRouter />
     <style is:global>
       @keyframes fadeOut {
         from { opacity: 1; }
@@ -94,10 +92,7 @@ const { title, activePage = 'work' } = Astro.props;
   <body>
     <script is:inline>
       (function () {
-        var nav = performance.getEntriesByType && performance.getEntriesByType('navigation')[0];
-        if (nav && (nav.type === 'navigate' || nav.type === 'reload')) {
-          document.documentElement.dataset.initialLoad = 'true';
-        }
+        document.documentElement.dataset.initialLoad = 'true';
       })();
     </script>
     <main class="main">
@@ -106,19 +101,5 @@ const { title, activePage = 'work' } = Astro.props;
         <slot />
       </div>
     </main>
-    <script>
-      document.addEventListener('astro:before-swap', () => {
-        delete document.documentElement.dataset.initialLoad;
-      });
-
-      document.addEventListener('astro:after-swap', () => {
-        const path = window.location.pathname;
-        document.querySelectorAll('.nav-link--active-work, .nav-link--active-about').forEach(el => el.classList.remove('nav-link--active-work', 'nav-link--active-about'));
-        const workLink = document.querySelector('a.nav-link[href="/work"]');
-        const aboutLink = document.querySelector('a.nav-link[href="/about"]');
-        if (path.startsWith('/work') && workLink) workLink.classList.add('nav-link--active-work');
-        if (path.startsWith('/about') && aboutLink) aboutLink.classList.add('nav-link--active-about');
-      });
-    </script>
   </body>
 </html>
