@@ -167,7 +167,7 @@ import { workData } from '../../data/work';
     lightbox.addEventListener('click', closeLightbox);
   }
 
-  document.addEventListener('astro:page-load', () => {
+  document.addEventListener('DOMContentLoaded', () => {
     initAccordions();
     initLightbox();
   });
