@@ -65,8 +65,8 @@ export const workData: WorkItem[] = [
       },
     ],
     stats: [
-      { label: 'Monthly GMV recovery', value: '$7M+' },
-      { label: 'MoM growth', value: '6%' },
+      { label: 'Higher conversion', value: '11.4x' },
+      { label: 'Higher revenue per send', value: '12.1x' },
     ],
     video: '/custom-code.mp4',
   },
