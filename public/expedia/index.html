@@ -1,0 +1,1960 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dan Rohr — Expedia Group</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/iconoir-icons/iconoir@main/css/iconoir.css" />
+<style>
+  @font-face {
+    font-family: 'Albert Sans';
+    font-style: normal;
+    font-weight: 100 900;
+    font-display: swap;
+    src: url('https://cdn.jsdelivr.net/npm/@fontsource-variable/albert-sans@latest/files/albert-sans-latin-wght-normal.woff2') format('woff2-variations');
+    unicode-range: U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;
+  }
+  :root {
+    /* Cream base: danrohr.com. EG brand blue used as intentional accent (not flooding the field),
+       whitespace + warm neutrals — rhythm inspired by EG Brand Standards deck (see case study). */
+    --bg:           #F4F4F2;
+    --bg-2:         #EDEDE8;
+    --bg-3:         #E8E8E4;
+    --surface:      #FDFDFC;
+    --border:       rgba(32,29,26,0.085);
+    --border-mid:   rgba(32,29,26,0.15);
+    --text:         #1c1a17;
+    --text-muted:   rgba(32,29,26,0.56);
+    --text-dim:     rgba(32,29,26,0.4);
+    --accent:       #0B008A;
+    --accent-warm:  #0B008A;
+    --accent-dim:   rgba(11,0,138,0.055);
+    --eg-blue:      #0B008A;
+    --eg-blue-mid:  rgba(11,0,138,0.095);
+    --eg-blue-dim:  rgba(11,0,138,0.04);
+    --eg-blue-soft: rgba(11,0,138,0.065);
+    --signal:       #0B008A;
+    --signal-dim:   rgba(11,0,138,0.045);
+    --hero-grid:    40px;
+    --hero-grid-line: rgba(32,29,26,0.075);
+    --radius-box:   clamp(22px, 4vw, 32px);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Albert Sans', sans-serif;
+    font-weight: 300;
+    line-height: 1.6;
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ── NOISE ── */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 999;
+    opacity: 0.35;
+  }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    padding: 24px clamp(36px, 5vw, 72px);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: linear-gradient(to bottom, rgba(244,244,242,0.97) 0%, transparent 100%);
+  }
+  .nav-name {
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+  .nav-name:hover { color: var(--text); }
+  .nav-tag {
+    font-size: 12px;
+    color: var(--text-dim);
+    letter-spacing: 0.05em;
+  }
+
+  /* ── HERO ── */
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: 0 clamp(36px, 5vw, 72px) clamp(96px, 12vh, 132px);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero-bg {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    background-color: var(--bg);
+    background-image:
+      linear-gradient(var(--hero-grid-line) 1px, transparent 1px),
+      linear-gradient(90deg, var(--hero-grid-line) 1px, transparent 1px);
+    background-size: var(--hero-grid) var(--hero-grid);
+  }
+
+  .hero-flow {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+    overflow: hidden;
+  }
+  .hero-dot {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 6px;
+    height: 6px;
+    margin: -3px 0 0 -3px;
+    border-radius: 50%;
+    box-shadow: 0 0 0 1px var(--bg);
+    will-change: transform;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .hero-flow { display: none; }
+  }
+
+  .hero-content {
+    position: relative;
+    z-index: 2;
+    max-width: min(860px, 100%);
+    opacity: 0;
+    transform: translateY(28px);
+    animation: fade-up 1.3s cubic-bezier(0.16,1,0.3,1) 0.4s forwards;
+  }
+
+  .hero-panel {
+    background: rgba(253,253,252,0.94);
+    border: none;
+    border-radius: var(--radius-box);
+    padding: clamp(28px, 4vw, 44px) clamp(28px, 4vw, 48px);
+    box-shadow: 0 1px 0 rgba(255,255,255,0.85) inset;
+  }
+
+  @keyframes fade-up {
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .hero-lockup {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    margin-bottom: 32px;
+  }
+
+  .hero-eg-mark {
+    width: 28px;
+    height: 28px;
+    flex-shrink: 0;
+    opacity: 0.4;
+  }
+
+  .hero-eyebrow {
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    font-weight: 400;
+  }
+
+  .hero-headline {
+    font-family: 'Albert Sans', sans-serif;
+    font-size: clamp(36px, 4.5vw, 90px);
+    line-height: 1.03;
+    font-weight: 700;
+    font-variation-settings: 'wght' 700;
+    letter-spacing: -0.025em;
+    color: var(--text);
+    margin-bottom: 36px;
+  }
+
+  .hero-headline em {
+    font-style: normal;
+    font-weight: 700;
+    font-variation-settings: 'wght' 700;
+    color: var(--accent);
+  }
+
+  .hero-sub {
+    font-size: 17px;
+    line-height: 1.72;
+    color: var(--text-muted);
+    max-width: 520px;
+    font-weight: 300;
+  }
+
+  .hero-scroll {
+    margin-top: 60px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+  }
+  .scroll-arrow {
+    font-size: 11px;
+    color: var(--text-dim);
+    display: inline-flex;
+    align-items: baseline;
+    line-height: 1;
+    position: relative;
+    top: -2px;
+  }
+  @keyframes pulse-dot {
+    0%, 100% { opacity: 0.35; transform: scale(1); }
+    50% { opacity: 1; transform: scale(1.5); }
+  }
+
+  /* ── SECTION BASE ── */
+  section {
+    padding: clamp(112px, 11vw, 156px) clamp(36px, 5vw, 72px);
+    position: relative;
+  }
+  .section-inner { max-width: 1080px; margin: 0 auto; }
+
+  .section-eyebrow {
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-weight: 400;
+  }
+  .section-eyebrow::before {
+    content: '';
+    display: block;
+    width: 24px;
+    height: 1px;
+    background: var(--border-mid);
+  }
+
+  .section-title {
+    font-family: 'Albert Sans', sans-serif;
+    font-size: clamp(28px, 3.2vw, 44px);
+    font-weight: 550;
+    font-variation-settings: 'wght' 550;
+    line-height: 1.18;
+    letter-spacing: -0.01em;
+  }
+
+  /* ── THESIS ── */
+  .thesis {
+    background: var(--bg);
+    border-top: 1px solid var(--border);
+  }
+  .thesis-grid {
+    display: grid;
+    grid-template-columns: 180px 1fr;
+    gap: 96px;
+    align-items: start;
+  }
+  .thesis-label {
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    padding-top: 10px;
+    font-weight: 400;
+  }
+  .thesis-body {
+    font-family: 'Albert Sans', sans-serif;
+    font-size: 28px;
+    line-height: 1.62;
+    font-weight: 400;
+    color: var(--text);
+    letter-spacing: -0.5px;
+  }
+  .thesis-body strong {
+    color: var(--accent);
+    font-weight: 550;
+    font-variation-settings: 'wght' 550;
+  }
+
+  /* ── THROUGH-LINE ── */
+  .throughline {
+    background: var(--bg-2);
+  }
+  .throughline-header { margin-bottom: 88px; }
+
+  .tl-items { display: flex; flex-direction: column; }
+
+  .tl-item {
+    display: grid;
+    grid-template-columns: 140px 1px 1fr;
+    gap: 0 44px;
+    padding: 44px 0;
+    border-top: 1px solid var(--border);
+    opacity: 0;
+    transform: translateX(-14px);
+    transition: opacity 0.7s ease, transform 0.7s ease;
+  }
+  .tl-item.visible { opacity: 1; transform: translateX(0); }
+  .tl-item:first-child { border-top: none; }
+  .tl-item:last-child { border-bottom: none; }
+
+  .tl-year {
+    font-size: 12px;
+    color: var(--text-dim);
+    letter-spacing: 0.05em;
+    padding-top: 4px;
+    text-align: right;
+    font-weight: 300;
+  }
+  .tl-divider {
+    background: var(--border);
+    position: relative;
+  }
+  .tl-dot {
+    position: absolute;
+    top: 8px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--accent);
+    opacity: 0.5;
+  }
+  .tl-company {
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    margin-bottom: 7px;
+    font-weight: 400;
+  }
+  .tl-role {
+    font-size: 17px;
+    color: var(--text);
+    margin-bottom: 12px;
+    font-weight: 550;
+    font-variation-settings: 'wght' 550;
+    line-height: 1.3;
+  }
+  .tl-desc {
+    font-size: 14px;
+    color: var(--text-muted);
+    line-height: 1.75;
+    max-width: 640px;
+  }
+  .tl-tag {
+    display: inline-block;
+    margin-top: 14px;
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    padding: 4px 11px;
+    color: var(--accent);
+    background: var(--accent-dim);
+    font-weight: 400;
+    border-radius: 12px;
+  }
+
+  /* ── PROJECTS ── */
+  .projects { background: var(--bg); }
+  .projects-header { margin-bottom: 96px; }
+  .project-cards { display: flex; flex-direction: column; gap: 40px; }
+
+  .project-card {
+    background: var(--surface);
+    border: none;
+    border-radius: var(--radius-box);
+    padding: 56px 56px 52px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 64px;
+    position: relative;
+    overflow: hidden;
+    opacity: 0;
+    transform: translateY(18px);
+    transition: opacity 0.8s ease, transform 0.8s ease, background 0.4s ease;
+  }
+  .project-card.visible { opacity: 1; transform: translateY(0); }
+
+  .project-card:hover { background: #fff; }
+
+  .project-glow { display: none; }
+
+  .project-num {
+    position: absolute;
+    top: 26px; right: 34px;
+    font-size: 11px;
+    color: var(--text-dim);
+    letter-spacing: 0.1em;
+    font-weight: 400;
+  }
+  .project-tag {
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    margin-bottom: 16px;
+    font-weight: 400;
+  }
+  .project-title {
+    font-family: 'Albert Sans', sans-serif;
+    font-size: clamp(20px, 2vw, 27px);
+    font-weight: 550;
+    font-variation-settings: 'wght' 550;
+    line-height: 1.22;
+    color: var(--text);
+    margin-bottom: 22px;
+  }
+  .project-desc {
+    font-size: 14px;
+    color: var(--text-muted);
+    line-height: 1.78;
+  }
+  .project-desc + .project-desc { margin-top: 14px; }
+
+  .project-right {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+  .project-stats {
+    display: flex;
+    gap: 36px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 4px;
+  }
+  .stat-value {
+    font-family: 'Albert Sans', sans-serif;
+    font-size: 30px;
+    color: var(--text);
+    font-weight: 550;
+    font-variation-settings: 'wght' 550;
+    line-height: 1;
+    margin-bottom: 5px;
+  }
+  .stat-label {
+    font-size: 11px;
+    color: var(--text-dim);
+    letter-spacing: 0.05em;
+    line-height: 1.4;
+    font-weight: 300;
+  }
+
+  .project-lesson {
+    padding: 20px 24px;
+    border: none;
+    border-radius: var(--radius-box);
+    background: var(--bg-2);
+  }
+  .project-lesson-label {
+    font-size: 10px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 8px;
+    font-weight: 500;
+  }
+  .project-lesson-text {
+    font-size: 13px;
+    color: var(--text-muted);
+    line-height: 1.68;
+  }
+
+  .expedia-bridge {
+    padding: 18px 22px;
+    background: var(--eg-blue-dim);
+    border: none;
+    border-radius: var(--radius-box);
+  }
+  .bridge-label {
+    font-size: 10px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 6px;
+    opacity: 0.9;
+    font-weight: 400;
+  }
+  .bridge-text {
+    font-size: 13px;
+    color: var(--text-muted);
+    line-height: 1.65;
+  }
+
+  /* ── AI SECTION ── */
+  .ai-section {
+    background: var(--bg-2);
+    overflow: hidden;
+  }
+  .ai-section-inner {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 96px;
+    align-items: start;
+    max-width: 1080px;
+    margin: 0 auto;
+  }
+  .ai-title {
+    font-family: 'Albert Sans', sans-serif;
+    font-size: clamp(28px, 3vw, 44px);
+    font-weight: 550;
+    font-variation-settings: 'wght' 550;
+    line-height: 1.18;
+    margin-bottom: 28px;
+    letter-spacing: -0.01em;
+  }
+  .ai-title em {
+    font-style: normal;
+    font-weight: 550;
+    font-variation-settings: 'wght' 550;
+    color: var(--accent);
+  }
+
+  .ai-body {
+    font-size: 15px;
+    color: var(--text-muted);
+    line-height: 1.82;
+    margin-bottom: 18px;
+  }
+
+  .signal-viz {
+    margin-top: 44px;
+    height: 48px;
+    position: relative;
+    overflow: hidden;
+  }
+  .signal-canvas {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: flex-end;
+    gap: 3px;
+  }
+
+  .ai-right {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    padding-top: 6px;
+  }
+  .ai-principle {
+    padding: 22px 26px;
+    border: none;
+    border-radius: var(--radius-box);
+    background: var(--surface);
+    position: relative;
+  }
+  .ai-principle-title {
+    font-size: 13px;
+    font-weight: 550;
+    font-variation-settings: 'wght' 550;
+    color: var(--text);
+    margin-bottom: 6px;
+    letter-spacing: 0.02em;
+  }
+  .ai-principle-body {
+    font-size: 13px;
+    color: var(--text-muted);
+    line-height: 1.67;
+  }
+
+  /* ── CLOSING ── */
+  .closing {
+    background: #fff;
+  }
+  .closing-inner {
+    max-width: 620px;
+    margin: 0 auto;
+    text-align: center;
+  }
+  .closing-headline {
+    font-family: 'Albert Sans', sans-serif;
+    font-size: clamp(32px, 4vw, 54px);
+    font-weight: 550;
+    font-variation-settings: 'wght' 550;
+    line-height: 1.15;
+    letter-spacing: -0.02em;
+    margin-bottom: 32px;
+  }
+  .closing-headline em {
+    font-style: normal;
+    font-weight: 550;
+    font-variation-settings: 'wght' 550;
+    color: var(--accent);
+  }
+  .closing-body {
+    font-size: 16px;
+    color: var(--text-muted);
+    line-height: 1.82;
+    margin-bottom: 48px;
+  }
+  .closing-links {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    flex-wrap: wrap;
+  }
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 14px 28px;
+    font-size: 13px;
+    letter-spacing: 0.06em;
+    text-decoration: none;
+    transition: all 0.25s ease;
+    font-family: 'Albert Sans', sans-serif;
+    font-weight: 400;
+    border-radius: var(--radius-box);
+  }
+  .btn-primary {
+    border: 1px solid var(--border-mid);
+    color: var(--text-muted);
+  }
+  .btn-primary:hover { border-color: var(--accent); color: var(--accent); }
+  .btn-secondary {
+    border: 1px solid var(--border-mid);
+    color: var(--text-muted);
+  }
+  .btn-secondary:hover { border-color: var(--accent); color: var(--accent); }
+  .btn-arrow { display: none; }
+
+  /* ── FOOTER ── */
+  footer {
+    padding: 36px clamp(36px, 5vw, 72px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 7px;
+    background: #fff;
+    padding-left: calc(clamp(36px, 5vw, 72px) + 20px);
+  }
+  .footer-note {
+    font-size: 12px;
+    color: var(--text-dim);
+    letter-spacing: 0.04em;
+  }
+  .footer-mark {
+    width: 18px;
+    height: 18px;
+    flex-shrink: 0;
+  }
+
+  /* ── NOTIFICATION + JOURNEY SECTION ── */
+  .journey-section {
+    background: var(--bg);
+    border-top: 1px solid var(--border);
+  }
+  .journey-inner {
+    max-width: 1080px;
+    margin: 0 auto;
+  }
+  .journey-header {
+    margin-bottom: 88px;
+  }
+
+  /* Two-column layout: notification left, timeline right */
+  .journey-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 80px;
+    align-items: start;
+  }
+
+  /* ── NOTIFICATION MOCK ── */
+  .notif-col {}
+  .notif-label {
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    margin-bottom: 24px;
+    font-weight: 400;
+  }
+
+  .phone-wrap {
+    display: flex;
+    justify-content: flex-start;
+  }
+
+  /* Flat frame — no shadow, blends with cream bg */
+  .phone-shell {
+    width: 300px;
+    background: var(--bg-3);
+    border-radius: 44px;
+    padding: 0;
+    border: 1.5px solid var(--border-mid);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .phone-screen {
+    border-radius: 42px;
+    overflow: hidden;
+    position: relative;
+  }
+
+  /* Status bar */
+  .phone-status {
+    position: absolute;
+    top: 4px;
+    left: 0;
+    right: 0;
+    z-index: 10;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 14px 22px 0;
+    opacity: 0.5;
+  }
+
+  .status-time {
+    font-size: 13px;
+    font-weight: 500;
+    color: rgba(255,255,255,0.85);
+    letter-spacing: -0.01em;
+  }
+
+  .status-icons {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+
+  .status-icon {
+    color: rgba(255,255,255,0.75);
+    font-size: 11px;
+    line-height: 1;
+  }
+
+  .phone-time-wrap {
+    margin-top: 4px;
+    position: relative;
+    z-index: 2;
+    text-align: center;
+    margin-bottom: 20px;
+  }
+
+  .phone-date {
+    font-size: 14px;
+    font-weight: 400;
+    color: rgba(210,208,235,0.75);
+    text-align: center;
+    margin-top: 14px;
+    margin-bottom: 2px;
+    letter-spacing: 0.01em;
+    position: relative;
+    z-index: 2;
+  }
+
+  /* Dynamic island */
+  .phone-island {
+    width: 88px;
+    height: 28px;
+    background: #000;
+    border-radius: 20px;
+    margin: 10px auto 0;
+    position: relative;
+    z-index: 10;
+  }
+
+  /* Modern iOS wallpaper — warm coral/rose on muted purple-blue, organic waves */
+  .phone-wallpaper {
+    height: 600px;
+    background: linear-gradient(160deg, #6e6a9e 0%, #7b6fa8 30%, #8a7ab0 60%, #9688b8 100%);
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    padding: 0 14px 20px;
+    overflow: hidden;
+  }
+
+  /* SVG wave shapes injected via pseudo — coral/rose organic forms */
+  .phone-wallpaper::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background:
+      radial-gradient(ellipse 120% 55% at 75% 65%, rgba(232,110,90,0.82) 0%, rgba(220,90,100,0.4) 40%, transparent 70%),
+      radial-gradient(ellipse 90% 40% at 30% 80%, rgba(240,160,150,0.5) 0%, transparent 55%),
+      radial-gradient(ellipse 60% 30% at 85% 85%, rgba(210,180,200,0.45) 0%, transparent 50%);
+  }
+
+  .phone-wallpaper::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background:
+      radial-gradient(ellipse 70% 25% at 55% 95%, rgba(210,170,180,0.55) 0%, transparent 60%),
+      radial-gradient(ellipse 50% 20% at 15% 90%, rgba(190,160,195,0.4) 0%, transparent 55%);
+  }
+
+  .phone-time-wrap {
+    margin-top: 52px;
+    position: relative;
+    z-index: 2;
+    text-align: center;
+    margin-bottom: 8px;
+  }
+
+  .phone-time {
+    font-size: 64px;
+    font-weight: 200;
+    color: rgba(0,0,0,0.8);
+    letter-spacing: -0.04em;
+    line-height: 1;
+  }
+
+  .phone-date {
+    font-size: 14px;
+    font-weight: 400;
+    color: rgba(210,208,235,0.75);
+    text-align: center;
+    margin-top: 14px;
+    margin-bottom: 2px;
+    letter-spacing: 0.01em;
+    position: relative;
+    z-index: 2;
+  }
+
+  /* Dynamic island */
+  .phone-island {
+    width: 88px;
+    height: 28px;
+    background: #1c1a17;
+    border-radius: 20px;
+    margin: 10px auto 0;
+    position: relative;
+    z-index: 10;
+  }
+
+  /* iOS glass notification on warm dark wallpaper */
+  .notif-card {
+    background: rgba(255,255,255,0.18);
+    backdrop-filter: blur(40px) saturate(180%);
+    -webkit-backdrop-filter: blur(40px) saturate(180%);
+    border-radius: 20px;
+    padding: 13px 14px 13px;
+    position: relative;
+    z-index: 2;
+    border: 1px solid rgba(255,255,255,0.28);
+    box-shadow:
+      0 2px 0 rgba(255,255,255,0.15) inset,
+      0 8px 24px rgba(0,0,0,0.15);
+    animation: notif-appear 0.8s cubic-bezier(0.16,1,0.3,1) 0.6s both;
+  }
+
+  @keyframes notif-appear {
+    from { opacity: 0; transform: translateY(-10px) scale(0.98); }
+    to   { opacity: 1; transform: translateY(0) scale(1); }
+  }
+
+  .notif-header {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    margin-bottom: 6px;
+  }
+
+  .notif-app-icon {
+    width: 20px;
+    height: 20px;
+    border-radius: 6px;
+    background: #0B008A;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .notif-app-name {
+    font-size: 11px;
+    color: rgba(255,255,255,0.6);
+    letter-spacing: 0.05em;
+    font-weight: 500;
+    flex: 1;
+    text-transform: uppercase;
+  }
+
+  .notif-time {
+    font-size: 11px;
+    color: rgba(255,255,255,0.4);
+    font-weight: 300;
+  }
+
+  .notif-body {
+    font-size: 13px;
+    color: rgba(255,255,255,0.92);
+    line-height: 1.45;
+    margin-bottom: 10px;
+    font-weight: 300;
+    letter-spacing: -0.01em;
+  }
+
+  .notif-body strong {
+    font-weight: 500;
+    color: #fff;
+  }
+
+  /* CTA — single line, no wrapping */
+  .notif-cta {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255,255,255,0.18);
+    border: 1px solid rgba(255,255,255,0.22);
+    border-radius: 12px;
+    padding: 8px 14px;
+    font-size: 12px;
+    color: rgba(255,255,255,0.9);
+    font-weight: 500;
+    white-space: nowrap;
+    cursor: default;
+    letter-spacing: 0.01em;
+  }
+
+  /* Home indicator */
+  .phone-pill {
+    width: 110px;
+    height: 4px;
+    background: rgba(255,255,255,0.25);
+    border-radius: 2px;
+    margin: 10px auto 14px;
+    position: relative;
+    z-index: 2;
+  }
+
+  .notif-caption {
+    margin-top: 20px;
+    font-size: 12px;
+    color: var(--text-dim);
+    line-height: 1.6;
+    max-width: 280px;
+  }
+
+  /* ── JOURNEY TIMELINE ── */
+  .timeline-col {}
+  .timeline-label {
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    margin-bottom: 24px;
+    font-weight: 400;
+  }
+
+  .trip-timeline {
+    position: relative;
+    padding-left: 0;
+  }
+
+  /* Vertical spine — draws between items, not past the last one */
+  .trip-timeline {
+    position: relative;
+    padding-left: 0;
+  }
+
+  .trip-phase {
+    display: flex;
+    gap: 20px;
+    align-items: flex-start;
+    padding: 0 0 32px;
+    position: relative;
+    opacity: 0;
+    transform: translateX(-8px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+  }
+  .trip-phase.visible { opacity: 1; transform: translateX(0); }
+  .trip-phase:last-child { padding-bottom: 0; }
+
+  /* Draw the line on each item except the last, connecting dot to dot */
+  .trip-phase:not(:last-child)::before {
+    content: '';
+    position: absolute;
+    left: 15px;
+    top: 30px;
+    bottom: 0;
+    width: 1px;
+    background: var(--border-mid);
+  }
+
+  .trip-phase-dot {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background: var(--surface);
+    border: 1px solid var(--border-mid);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    flex-shrink: 0;
+    position: relative;
+    z-index: 1;
+    color: var(--text-dim);
+  }
+
+  .trip-phase-dot.active {
+    background: var(--surface);
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  .trip-phase-dot i {
+    font-size: 14px;
+    display: flex;
+  }
+
+  .trip-phase-body {
+    flex: 1;
+    padding-top: 4px;
+  }
+
+  .trip-phase-name {
+    font-size: 13px;
+    font-weight: 550;
+    font-variation-settings: 'wght' 550;
+    color: var(--text);
+    margin-bottom: 4px;
+    line-height: 1.2;
+  }
+
+  .trip-phase-name.active { color: var(--accent); }
+
+  .trip-phase-comm {
+    font-size: 12px;
+    color: var(--text-muted);
+    line-height: 1.6;
+    margin-bottom: 6px;
+  }
+
+  .trip-phase-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 10px;
+    letter-spacing: 0.07em;
+    color: var(--accent);
+    background: var(--accent-dim);
+    padding: 3px 8px;
+    border-radius: 8px;
+    font-weight: 400;
+  }
+
+  .trip-phase-tag.muted {
+    color: var(--text-dim);
+    background: var(--bg-3);
+  }
+
+  .journey-footnote {
+    margin-top: 56px;
+    padding: 20px 24px;
+    background: var(--eg-blue-dim);
+    border-radius: var(--radius-box);
+    font-size: 13px;
+    color: var(--text-muted);
+    line-height: 1.68;
+    max-width: 540px;
+  }
+  .journey-footnote strong {
+    color: var(--accent);
+    font-weight: 550;
+    font-variation-settings: 'wght' 550;
+  }
+
+  /* ── PROCESS SIDEBAR ── */
+  .process-trigger {
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    color: var(--text-dim);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    padding: 6px 12px;
+    border: none;
+    border-radius: 20px;
+    background: rgba(255,255,255,0.7);
+    transition: all 0.2s ease;
+    user-select: none;
+    text-decoration: none;
+    font-weight: 400;
+  }
+  .process-trigger:hover {
+    color: var(--accent);
+    background: var(--accent-dim);
+  }
+  .process-trigger-dot { display: none; }
+
+  .process-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 200;
+    pointer-events: none;
+  }
+  .process-overlay.open { pointer-events: all; }
+
+  .process-backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(11,0,138,0.18);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+  .process-overlay.open .process-backdrop { opacity: 1; }
+
+  .process-sidebar {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: 420px;
+    max-width: 90vw;
+    background: var(--surface);
+    border-left: 1px solid var(--border);
+    padding: 48px 40px 60px;
+    overflow-y: auto;
+    transform: translateX(100%);
+    transition: transform 0.4s cubic-bezier(0.16,1,0.3,1);
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+  .process-overlay.open .process-sidebar {
+    transform: translateX(0);
+  }
+
+  .process-close {
+    position: absolute;
+    top: 20px;
+    right: 24px;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: var(--text-dim);
+    font-size: 18px;
+    border-radius: 50%;
+    transition: all 0.2s;
+    background: none;
+    border: none;
+    font-family: inherit;
+    line-height: 1;
+  }
+  .process-close:hover { color: var(--text); background: var(--bg-2); }
+
+  .process-eyebrow {
+    font-size: 10px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 12px;
+    font-weight: 500;
+  }
+
+  .process-title {
+    font-family: 'Albert Sans', sans-serif;
+    font-size: 22px;
+    font-weight: 600;
+    font-variation-settings: 'wght' 600;
+    color: var(--text);
+    line-height: 1.25;
+    letter-spacing: -0.01em;
+    margin-bottom: 20px;
+  }
+
+  .process-intro {
+    font-size: 14px;
+    color: var(--text-muted);
+    line-height: 1.75;
+    margin-bottom: 36px;
+  }
+
+  .process-step {
+    display: flex;
+    gap: 16px;
+    padding: 20px 0;
+    border-top: 1px solid var(--border);
+  }
+  .process-step:last-of-type { border-bottom: 1px solid var(--border); }
+
+  .process-step-num {
+    font-size: 11px;
+    color: var(--accent);
+    font-weight: 600;
+    font-variation-settings: 'wght' 600;
+    letter-spacing: 0.06em;
+    padding-top: 2px;
+    flex-shrink: 0;
+    width: 20px;
+  }
+
+  .process-step-body {}
+  .process-step-title {
+    font-size: 13px;
+    font-weight: 550;
+    font-variation-settings: 'wght' 550;
+    color: var(--text);
+    margin-bottom: 5px;
+    line-height: 1.3;
+  }
+  .process-step-desc {
+    font-size: 13px;
+    color: var(--text-muted);
+    line-height: 1.68;
+  }
+
+  .process-footer {
+    margin-top: 32px;
+    padding: 18px 20px;
+    background: var(--eg-blue-dim);
+    border-radius: var(--radius-box);
+    font-size: 13px;
+    color: var(--text-muted);
+    line-height: 1.65;
+  }
+  .process-footer strong {
+    color: var(--accent);
+    font-weight: 550;
+    font-variation-settings: 'wght' 550;
+  }
+  .reveal {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.85s ease, transform 0.85s ease;
+  }
+  .reveal.visible { opacity: 1; transform: translateY(0); }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 768px) {
+    nav { padding: 20px 24px; }
+    section { padding: 88px 24px; }
+    .hero { padding: 0 24px 72px; }
+    .thesis-grid { grid-template-columns: 1fr; gap: 20px; }
+    .thesis-body { font-size: 20px; letter-spacing: -0.3px; }
+    .project-card { grid-template-columns: 1fr; gap: 36px; padding: 36px 28px; }
+    .ai-section-inner { grid-template-columns: 1fr; gap: 52px; }
+    .tl-item { grid-template-columns: 80px 1px 1fr; gap: 0 22px; }
+    footer { padding: 32px 24px; padding-left: 32px; }
+    .project-stats { gap: 24px; }
+
+    /* Journey section mobile */
+    .journey-grid { grid-template-columns: 1fr; gap: 56px; }
+    .journey-header { margin-bottom: 48px; }
+    .phone-shell { width: 100%; max-width: 300px; }
+    .phone-wrap { justify-content: center; }
+    .notif-caption { max-width: 100%; }
+
+    /* Timeline mobile */
+    .trip-phase-comm { font-size: 13px; }
+    .timeline-label { margin-bottom: 20px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav aria-label="Primary">
+  <a href="https://www.danrohr.com" class="nav-name">Dan Rohr</a>
+  <button class="process-trigger" onclick="document.getElementById('processSidebar').classList.add('open')">
+    <span class="process-trigger-dot"></span>
+    How this was made
+  </button>
+</nav>
+
+<!-- PROCESS SIDEBAR -->
+<div class="process-overlay" id="processSidebar">
+  <div class="process-backdrop" onclick="document.getElementById('processSidebar').classList.remove('open')"></div>
+  <div class="process-sidebar">
+    <button class="process-close" onclick="document.getElementById('processSidebar').classList.remove('open')">✕</button>
+
+    <div class="process-eyebrow">Behind the page</div>
+    <h2 class="process-title">A tailored cover letter, built with intentional AI collaboration</h2>
+    <p class="process-intro">This page wasn't generated from a prompt. It was built through a structured process: researching the role and company, aligning my background to what actually matters here, and making deliberate decisions about narrative, design, and tone at every step.</p>
+
+    <div class="process-step">
+      <div class="process-step-num">01</div>
+      <div class="process-step-body">
+        <div class="process-step-title">Set up a Claude project with a detailed brief</div>
+        <div class="process-step-desc">Before writing a word, I configured a project with full context: my resume, case study scripts, the role description, and instructions on how to approach each engagement, including research steps, narrative framing, and design collaboration rules.</div>
+      </div>
+    </div>
+
+    <div class="process-step">
+      <div class="process-step-num">02</div>
+      <div class="process-step-body">
+        <div class="process-step-title">Researched the role and the people behind it</div>
+        <div class="process-step-desc">The project prompted a research pass on Expedia's design language, Rachel Been's background (including her Material Design roots and recent podcast on designing for non-deterministic flows), and Sang Han's visual sensibility. That research shaped everything from the narrative angle to the color palette.</div>
+      </div>
+    </div>
+
+    <div class="process-step">
+      <div class="process-step-num">03</div>
+      <div class="process-step-body">
+        <div class="process-step-title">Chose a narrative before touching design</div>
+        <div class="process-step-desc">Three narrative angles were proposed. I chose the one that felt most true: complexity belongs in the system, not on the surface. That thesis then had to be earned by the work, not just stated. Every project highlight was selected and framed to prove it.</div>
+      </div>
+    </div>
+
+    <div class="process-step">
+      <div class="process-step-num">04</div>
+      <div class="process-step-body">
+        <div class="process-step-title">Directed the visual design iteratively</div>
+        <div class="process-step-desc">Three design directions were proposed. I chose the direction, guided the palette shift from dark to cream, pushed for Albert Sans to match Expedia's brand sensibility, and iterated on every detail, from the phone chrome to the notification copy to the grid animation in the hero.</div>
+      </div>
+    </div>
+
+    <div class="process-step">
+      <div class="process-step-num">05</div>
+      <div class="process-step-body">
+        <div class="process-step-title">Added a conceptual layer grounded in the role</div>
+        <div class="process-step-desc">The Paris notification and trip timeline weren't in the original brief. I introduced them after researching what Expedia's communication systems challenge actually is. The design question (what's the one thing you send when someone lands?) came before the execution.</div>
+      </div>
+    </div>
+
+    <div class="process-footer">
+      <strong>The point:</strong> AI handles research, build speed, and iteration. Judgment about what to say, what to cut, and what actually matters for this role. That part was mine.
+    </div>
+  </div>
+</div>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-flow" id="heroFlow" aria-hidden="true"></div>
+
+  <div class="hero-content">
+    <div class="hero-panel">
+      <div class="hero-lockup">
+        <svg class="hero-eg-mark" viewBox="0 0 152 153" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M115.29 70.28C115.29 55.48 101.73 34.21 75.52 34.21C51.78 34.21 35.75 54.56 35.75 75.52C35.75 100.49 53.01 118.37 82.61 118.37H138.72C125.46 139.02 102.34 152.28 75.83 152.28C33.9 152.28 0 118.06 0 76.14C0 34.22 33.91 0 75.83 0C117.75 0 151.97 34.22 151.97 76.14C151.97 84.46 150.43 92.48 148.27 99.88H63.49V91.56L93.39 90.64C108.51 90.01 115.29 82.3 115.29 70.28Z" fill="#1c1a17"/>
+        </svg>
+        <div class="hero-eyebrow">Product Design Lead, Core Experiences</div>
+      </div>
+      <h1 class="hero-headline">
+        Complexity belongs<br>in the system,<br><em>not on the surface.</em>
+      </h1>
+      <p class="hero-sub">
+        A decade designing communication systems, from classroom platforms to enterprise analytics to merchant marketing at scale, organized around one principle: the right information reaches the right person at the right moment, without overload.
+      </p>
+      <div class="hero-scroll">
+        <span class="scroll-arrow"><i class="iconoir-arrow-down"></i></span>
+        The work below
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- THESIS -->
+<section class="thesis">
+  <div class="section-inner">
+    <div class="thesis-grid reveal">
+      <div class="thesis-label">Point of view</div>
+      <div class="thesis-body">
+        The hardest communication problems are systems problems. Travelers don't experience overload because someone sent too many messages. They experience it because the underlying logic wasn't organized around <strong>trust, timing, and intent.</strong> That's the design problem. That's where I work.
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- THROUGH-LINE -->
+<section class="throughline">
+  <div class="section-inner">
+    <div class="throughline-header reveal">
+      <div class="section-eyebrow">A decade of communication systems</div>
+      <h2 class="section-title">The same problem, at different scales</h2>
+    </div>
+    <div class="tl-items">
+
+      <div class="tl-item">
+        <div class="tl-year">2015–2018</div>
+        <div class="tl-divider"><div class="tl-dot"></div></div>
+        <div class="tl-body">
+          <div class="tl-company">Signal Kit</div>
+          <div class="tl-role">Zero-to-one communication platform for K–12</div>
+          <div class="tl-desc">Built a district-wide communication platform from scratch as the sole designer: multi-channel messaging across SMS, email, and in-app, with multi-language support. Within a year of shipping, 200+ districts adopted and was acquired.</div>
+          <span class="tl-tag">Multi-channel &nbsp;·&nbsp; Multi-language &nbsp;·&nbsp; 0→1</span>
+        </div>
+      </div>
+
+      <div class="tl-item">
+        <div class="tl-year">2018–2021</div>
+        <div class="tl-divider"><div class="tl-dot"></div></div>
+        <div class="tl-body">
+          <div class="tl-company">Lucky Orange</div>
+          <div class="tl-role">Customer behavior platform: chat, surveys, and announcements</div>
+          <div class="tl-desc">Led end-to-end design for a full customer communication and analytics stack: live chat, behavioral surveys, logic-triggered announcements, and session-based reporting, unified into a cohesive enterprise platform as the sole designer.</div>
+          <span class="tl-tag">Chat &nbsp;·&nbsp; Surveys &nbsp;·&nbsp; Announcements &nbsp;·&nbsp; Design system</span>
+        </div>
+      </div>
+
+      <div class="tl-item">
+        <div class="tl-year">2022–2026</div>
+        <div class="tl-divider"><div class="tl-dot"></div></div>
+        <div class="tl-body">
+          <div class="tl-company">Shopify</div>
+          <div class="tl-role">Marketing communication and merchant intelligence at scale</div>
+          <div class="tl-desc">Designed send-time optimization, a new campaign primitive, and analytics tools for 5 million merchants. The consistent challenge: making complex systems invisible so the right information reaches the right person at the right moment.</div>
+          <span class="tl-tag">Scale &nbsp;·&nbsp; Attribution &nbsp;·&nbsp; Systems</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- PROJECTS -->
+<section class="projects">
+  <div class="section-inner">
+    <div class="projects-header reveal">
+      <div class="section-eyebrow">Selected work</div>
+      <h2 class="section-title">Where the thinking shows up</h2>
+    </div>
+
+    <div class="project-cards">
+
+      <!-- PROJECT 1: SEND-TIME -->
+      <div class="project-card">
+        <div class="project-glow"></div>
+        <span class="project-num">01</span>
+        <div class="project-left">
+          <div class="project-tag">Shopify Email</div>
+          <h3 class="project-title">Send-time optimization: one smart default over a complex choice</h3>
+          <p class="project-desc">
+            Merchants had the content. They didn't have the signal. The scheduling flow had two separate actions, schedule and send, that created unnecessary friction and buried the timing decision. I merged them into a single "Schedule send" interaction to introduce a new AI-assisted recommended send time based on industry benchmark and store data.
+          </p>
+          <p class="project-desc">
+            The design challenge was trust. A recommendation is only useful if a merchant acts on it without second-guessing the source. A simple tooltip made the rationale visible without overwhelming the decision, and the default nudged toward optimal timing while keeping full control available.
+          </p>
+        </div>
+        <div class="project-right">
+          <div class="project-stats">
+            <div class="stat">
+              <div class="stat-value">+16%</div>
+              <div class="stat-label">CTR increase</div>
+            </div>
+            <div class="stat">
+              <div class="stat-value">$21M</div>
+              <div class="stat-label">GMV in 90 days</div>
+            </div>
+          </div>
+          <div class="project-lesson">
+            <div class="project-lesson-label">Core principle</div>
+            <div class="project-lesson-text">The right default is a design decision. Surfacing a recommendation without creating anxiety around it, while keeping the merchant in control, required as much care as the UI itself.</div>
+          </div>
+          <div class="expedia-bridge">
+            <div class="bridge-label">Relevant to Expedia</div>
+            <div class="bridge-text">Traveler communications all carry a timing dimension. Itinerary updates, rebooking prompts, check-in reminders. Each one has a moment where it earns trust or loses it. The design problem is the same: how does a system know when to speak?</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- PROJECT 2: CAMPAIGNS -->
+      <div class="project-card">
+        <div class="project-glow"></div>
+        <span class="project-num">02</span>
+        <div class="project-left">
+          <div class="project-tag">Shopify Marketing</div>
+          <h3 class="project-title">Campaigns: introducing a new primitive into a running system</h3>
+          <p class="project-desc">
+            Merchants had better analytics than ever. But none of it was organized around how they actually planned. I designed Campaigns, a new Admin-level entity for organizing marketing activity, tracking attribution, and evaluating results across channels.
+          </p>
+          <p class="project-desc">
+            The surface decisions were straightforward. The hard work was the system underneath: Campaigns touched URL redirects, role-based permissions, attribution logic, and surfaces across multiple teams. Introducing a new concept into a mature platform means every downstream consequence becomes a design decision.
+          </p>
+        </div>
+        <div class="project-right">
+          <div class="project-stats">
+            <div class="stat">
+              <div class="stat-value">50K</div>
+              <div class="stat-label">Monthly active merchants</div>
+            </div>
+            <div class="stat">
+              <div class="stat-value">50%</div>
+              <div class="stat-label">Retention lift, large merchants</div>
+            </div>
+          </div>
+          <div class="project-lesson">
+            <div class="project-lesson-label">Core principle</div>
+            <div class="project-lesson-text">The model can be complex. The surface cannot. As requirements stacked up, deliberately pushing complexity back into system logic, rather than exposing it, became the primary design job.</div>
+          </div>
+          <div class="expedia-bridge">
+            <div class="bridge-label">Relevant to Expedia</div>
+            <div class="bridge-text">Traveler communications span booking, servicing, and post-trip. A governance layer that organizes what's transactional, promotional, and support-related, making that distinction invisible to the traveler, requires this kind of primitive thinking.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- PROJECT 3: ANNOTATIONS -->
+      <div class="project-card">
+        <div class="project-glow"></div>
+        <span class="project-num">03</span>
+        <div class="project-left">
+          <div class="project-tag">Shopify Analytics</div>
+          <h3 class="project-title">Annotations: building the foundation before the AI layer is ready</h3>
+          <p class="project-desc">
+            Analytics could show merchants what changed. Not why. The brief was ambitious and loosely defined: automated events, manual notes, AI-generated callouts, management tooling, with no clear sequencing or scope. My first move was turning that ambiguity into a phased roadmap.
+          </p>
+          <p class="project-desc">
+            Starting with manual annotations on line charts, I prototyped the MVP in code using Cursor, cloning the Polaris Viz component structure to test interactions in context rather than static Figma. The point was to solve the core act of adding context first, and let that reveal the right questions for automation, AI, and scale.
+          </p>
+        </div>
+        <div class="project-right">
+          <div class="project-lesson">
+            <div class="project-lesson-label">Core principle</div>
+            <div class="project-lesson-text">Early ambiguity is a design problem worth solving before writing a single screen. I audited competitive patterns, used an internal AI research tool trained on past merchant interviews to generate realistic scenarios, and built a roadmap that separated the broader vision from the smallest useful starting point.</div>
+          </div>
+          <div class="expedia-bridge">
+            <div class="bridge-label">Relevant to Expedia</div>
+            <div class="bridge-text">Communication systems that will eventually be AI-driven need a well-defined manual foundation first. The sequencing and governance decisions made early shape what intelligent automation can build on. This is that kind of early work.</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- AI SECTION -->
+<section class="ai-section">
+  <div class="ai-section-inner">
+    <div class="ai-left reveal">
+      <div class="section-eyebrow">The AI layer</div>
+      <h2 class="ai-title">Systems designed<br>to <em>learn forward</em></h2>
+      <p class="ai-body">
+        The annotations work was explicitly about building Phase 1 so that AI-generated callouts and automated event markers could be Phase 2. The same logic applied to Exploration Modes, a project I led design on that introduced new analytical lenses directly into Shopify's reporting interface. Until those modes existed, Sidekick couldn't follow a merchant's question wherever it led. The surface was limiting both the merchant and the AI.
+      </p>
+      <p class="ai-body">
+        For Expedia's communication systems, the same principle applies: design a governance layer that can eventually be informed by behavioral signals like traveler history, trip phase, and channel preference, without those signals creating noise on the surface. The intelligence lives in the system. The traveler experiences clarity.
+      </p>
+      <p class="ai-body">
+        In my own process, I use AI to accelerate early exploration, prototype, and synthesize research and documentation. Allowing me to quickly generate structured insights and focus more on design decisions and system thinking.
+      </p>
+
+      <div class="signal-viz">
+        <div class="signal-canvas" id="signalCanvas"></div>
+      </div>
+    </div>
+
+    <div class="ai-right reveal">
+      <div class="ai-principle">
+        <div class="ai-principle-title">Manual before automated</div>
+        <div class="ai-principle-body">AI-assisted communication earns trust when the manual system already works. I build the foundation before the intelligent layer, so automation improves a proven pattern rather than masking a broken one.</div>
+      </div>
+      <div class="ai-principle">
+        <div class="ai-principle-title">Legible recommendations</div>
+        <div class="ai-principle-body">Send-time optimization showed me that a recommendation is only useful when the merchant understands why. Designing for AI means designing the rationale alongside the output.</div>
+      </div>
+      <div class="ai-principle">
+        <div class="ai-principle-title">Composable primitives</div>
+        <div class="ai-principle-body">Campaigns wasn't a feature. It was a layer others build on. When AI eventually drives communication logic, it needs a system of well-defined concepts underneath. I design those concepts first.</div>
+      </div>
+      <div class="ai-principle">
+        <div class="ai-principle-title">AI as a design tool</div>
+        <div class="ai-principle-body">I use AI-assisted research tools, coded prototypes, and agents in my own process, not to shortcut craft, but to test assumptions with less friction and surface edge cases earlier.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- NOTIFICATION + JOURNEY SECTION -->
+<section class="journey-section">
+  <div class="journey-inner section-inner">
+    <div class="journey-header reveal">
+      <div class="section-eyebrow">What this looks like in practice</div>
+      <h2 class="section-title">The right signal at the right moment</h2>
+    </div>
+
+    <div class="journey-grid">
+
+      <!-- A: Single notification -->
+      <div class="notif-col reveal">
+        <div class="notif-label">The moment that matters most</div>
+        <div class="phone-wrap">
+          <div class="phone-shell">
+            <div class="phone-screen">
+              <div class="phone-wallpaper">
+                <!-- Status bar -->
+                <div class="phone-status">
+                  <!-- WiFi icon -->
+                  <svg width="16" height="12" viewBox="0 0 16 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M8 9.5C8.69 9.5 9.25 10.06 9.25 10.75S8.69 12 8 12s-1.25-.56-1.25-1.25S7.31 9.5 8 9.5z" fill="rgba(255,255,255,0.85)"/>
+                    <path d="M8 6.5c1.1 0 2.09.45 2.81 1.17l.89-.89A5.23 5.23 0 008 5.25c-1.38 0-2.63.53-3.56 1.4l.89.89A3.73 3.73 0 018 6.5z" fill="rgba(255,255,255,0.85)"/>
+                    <path d="M8 3c2.07 0 3.94.8 5.33 2.1l.89-.89A8.23 8.23 0 008 1.75 8.23 8.23 0 002.78 4.21l.89.89A6.73 6.73 0 018 3z" fill="rgba(255,255,255,0.85)"/>
+                  </svg>
+                  <div class="status-icons">
+                    <!-- Cell signal bars -->
+                    <svg width="17" height="12" viewBox="0 0 17 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <rect x="0" y="8" width="3" height="4" rx="0.5" fill="rgba(255,255,255,0.85)"/>
+                      <rect x="4.5" y="5.5" width="3" height="6.5" rx="0.5" fill="rgba(255,255,255,0.85)"/>
+                      <rect x="9" y="3" width="3" height="9" rx="0.5" fill="rgba(255,255,255,0.85)"/>
+                      <rect x="13.5" y="0" width="3" height="12" rx="0.5" fill="rgba(255,255,255,0.85)"/>
+                    </svg>
+                    <!-- Battery icon -->
+                    <svg width="25" height="12" viewBox="0 0 25 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <rect x="0.5" y="0.5" width="21" height="11" rx="3.5" stroke="rgba(255,255,255,0.85)" stroke-width="1"/>
+                      <rect x="2" y="2" width="15" height="8" rx="2" fill="rgba(255,255,255,0.85)"/>
+                      <path d="M23 4v4a2 2 0 000-4z" fill="rgba(255,255,255,0.6)"/>
+                    </svg>
+                  </div>
+                </div>
+
+                <!-- Dynamic island -->
+                <div class="phone-island"></div>
+
+                <!-- Time & date as SVG — renders correctly regardless of font -->
+                <div class="phone-date" style="margin-top:16px;margin-bottom:0;">Tuesday, June 17</div>
+                <div class="phone-time-wrap" style="margin-top:0;margin-bottom:16px;">
+                  <svg viewBox="0 0 272 96" width="272" height="96" xmlns="http://www.w3.org/2000/svg" style="display:block;margin:0 auto;">
+                    <text
+                      x="136" y="84"
+                      text-anchor="middle"
+                      font-family="'SF Pro Display', -apple-system, 'Helvetica Neue', sans-serif"
+                      font-size="88"
+                      font-weight="700"
+                      letter-spacing="-4"
+                      fill="rgba(210,208,235,0.88)"
+                    >2:22</text>
+                  </svg>
+                </div>
+
+                <!-- Notification -->
+                <div class="notif-card">
+                  <div class="notif-header">
+                    <div class="notif-app-icon">
+                      <svg width="12" height="12" viewBox="0 0 152 153" fill="none">
+                        <path d="M115.29 70.28C115.29 55.48 101.73 34.21 75.52 34.21C51.78 34.21 35.75 54.56 35.75 75.52C35.75 100.49 53.01 118.37 82.61 118.37H138.72C125.46 139.02 102.34 152.28 75.83 152.28C33.9 152.28 0 118.06 0 76.14C0 34.22 33.91 0 75.83 0C117.75 0 151.97 34.22 151.97 76.14C151.97 84.46 150.43 92.48 148.27 99.88H63.49V91.56L93.39 90.64C108.51 90.01 115.29 82.3 115.29 70.28Z" fill="white"/>
+                      </svg>
+                    </div>
+                    <span class="notif-app-name">Expedia</span>
+                    <span class="notif-time">now</span>
+                  </div>
+                  <div class="notif-body">
+                    Welcome to Paris! Your room at <strong>Hôtel Suzie Blue</strong> will be ready in about <strong>2 hrs</strong>. Feel free to drop your bags and explore.
+                  </div>
+                  <div class="notif-cta">🚕&nbsp;&nbsp;Get a ride (~28 min)</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <p class="notif-caption">One notification. The system knows the room isn't ready yet, so it skips the lobby awkwardness and gets you moving. A second notification fires when the room is actually ready.</p>
+      </div>
+
+      <!-- C: Trip timeline -->
+      <div class="timeline-col">
+        <div class="timeline-label">Communication across the full journey</div>
+        <div class="trip-timeline">
+
+          <div class="trip-phase">
+            <div class="trip-phase-dot"><i class="iconoir-search"></i></div>
+            <div class="trip-phase-body">
+              <div class="trip-phase-name">Discovery &amp; planning</div>
+              <div class="trip-phase-comm">Conversational search, personalized recommendations, saved trip ideas.</div>
+              <span class="trip-phase-tag muted">ChatGPT app · Expedia.com</span>
+            </div>
+          </div>
+
+          <div class="trip-phase">
+            <div class="trip-phase-dot"><i class="iconoir-check"></i></div>
+            <div class="trip-phase-body">
+              <div class="trip-phase-name">Booking confirmed</div>
+              <div class="trip-phase-comm">Clear transactional receipt. Itinerary saved. No upsell noise.</div>
+              <span class="trip-phase-tag muted">Transactional · Low frequency</span>
+            </div>
+          </div>
+
+          <div class="trip-phase">
+            <div class="trip-phase-dot"><i class="iconoir-calendar"></i></div>
+            <div class="trip-phase-body">
+              <div class="trip-phase-name">Pre-trip</div>
+              <div class="trip-phase-comm">Check-in reminder. Flight status. Weather heads-up 24 hrs out.</div>
+              <span class="trip-phase-tag muted">Timely · Contextual</span>
+            </div>
+          </div>
+
+          <div class="trip-phase">
+            <div class="trip-phase-dot active"><i class="iconoir-airplane"></i></div>
+            <div class="trip-phase-body">
+              <div class="trip-phase-name active">Landing in Paris</div>
+              <div class="trip-phase-comm">Room status, ride to hotel, bag drop. One message. Everything the traveler needs in that moment.</div>
+              <span class="trip-phase-tag">High-value · Earned attention</span>
+            </div>
+          </div>
+
+          <div class="trip-phase">
+            <div class="trip-phase-dot"><i class="iconoir-building"></i></div>
+            <div class="trip-phase-body">
+              <div class="trip-phase-name">During stay</div>
+              <div class="trip-phase-comm">Room ready alert. Local suggestions surfaced by intent, not schedule. Silence is the default.</div>
+              <span class="trip-phase-tag muted">Intent-driven · Minimal</span>
+            </div>
+          </div>
+
+          <div class="trip-phase">
+            <div class="trip-phase-dot"><i class="iconoir-home-alt-slim"></i></div>
+            <div class="trip-phase-body">
+              <div class="trip-phase-name">Heading home</div>
+              <div class="trip-phase-comm">Departure reminder. Gate change if needed. Nothing after unless something changes.</div>
+              <span class="trip-phase-tag muted">Event-triggered only</span>
+            </div>
+          </div>
+
+        </div>
+
+        <div class="journey-footnote reveal">
+          <strong>The governance problem underneath:</strong> each of these phases has different ownership, urgency, and trust requirements. The design challenge isn't any single notification. It's the system that decides when to send, what to say, and when to stay silent.
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- CLOSING -->
+<section class="closing">
+  <div class="closing-inner reveal">
+    <div class="section-eyebrow" style="justify-content: center;">Why Expedia, why now</div>
+    <h2 class="closing-headline">
+      A design culture<br>worth <em>building inside</em>
+    </h2>
+    <p class="closing-body">
+      New design leadership with a deep systems orientation, a platform in genuine transformation, and a communication challenge that is as much architecture as it is UX. This is the kind of problem I've been working toward. Over the past decade I've designed systems at scale that help people make better decisions. My family and I enjoy adventure and travel, and I understand the pain points firsthand.
+    </p>
+    <p class="closing-body" style="font-size: 14px; margin-top: -16px;">
+      I'd love to talk about what a smarter communication infrastructure for travelers could look like, and what it needs to be ready for.
+    </p>
+    <div class="closing-links">
+      <a href="https://www.danrohr.com" class="btn btn-primary">
+        danrohr.com <span class="btn-arrow">→</span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <span class="footer-note">Crafted for</span>
+  <svg class="footer-mark" viewBox="0 0 152 153" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M115.29 70.28C115.29 55.48 101.73 34.21 75.52 34.21C51.78 34.21 35.75 54.56 35.75 75.52C35.75 100.49 53.01 118.37 82.61 118.37H138.72C125.46 139.02 102.34 152.28 75.83 152.28C33.9 152.28 0 118.06 0 76.14C0 34.22 33.91 0 75.83 0C117.75 0 151.97 34.22 151.97 76.14C151.97 84.46 150.43 92.48 148.27 99.88H63.49V91.56L93.39 90.64C108.51 90.01 115.29 82.3 115.29 70.28Z" fill="#0B008A"/>
+  </svg>
+  <span class="footer-note">Expedia Group</span>
+</footer>
+
+<script>
+  // ── SIGNAL BAR VISUALIZATION ──
+  const canvas = document.getElementById('signalCanvas');
+  if (canvas) {
+    const barCount = 52;
+    for (let i = 0; i < barCount; i++) {
+      const bar = document.createElement('div');
+      const isNoise = i < barCount * 0.52;
+      const progress = isNoise ? 0 : (i - barCount * 0.52) / (barCount * 0.48);
+
+      Object.assign(bar.style, {
+        position: 'absolute',
+        bottom: '0',
+        left: ((i / barCount) * 100) + '%',
+        width: '3px',
+        borderRadius: '1px 1px 0 0',
+        animation: 'signal-bar-anim 2s ease-in-out infinite',
+        transformOrigin: 'bottom',
+      });
+
+      if (isNoise) {
+        const h = Math.random() * 55 + 8;
+        Object.assign(bar.style, {
+          height: h + '%',
+          background: 'rgba(26,26,26,0.07)',
+          animationDuration: (Math.random() * 1.8 + 0.6) + 's',
+          animationDelay: (Math.random() * 2) + 's',
+          opacity: '0.35',
+        });
+      } else {
+        const h = 18 + progress * 78;
+        Object.assign(bar.style, {
+          height: h + '%',
+          background: `rgba(11,0,138,${0.28 + progress * 0.62})`,
+          animationDuration: '2.6s',
+          animationDelay: (i * 0.045) + 's',
+          opacity: (0.3 + progress * 0.6).toString(),
+        });
+      }
+
+      canvas.appendChild(bar);
+    }
+  }
+
+  // Inject keyframes
+  const style = document.createElement('style');
+  style.textContent = `
+    @keyframes signal-bar-anim {
+      0%, 100% { transform: scaleY(0.7); opacity: 0.3; }
+      50% { transform: scaleY(1); opacity: 0.9; }
+    }
+  `;
+  document.head.appendChild(style);
+
+  // ── SCROLL REVEALS ──
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) entry.target.classList.add('visible');
+    });
+  }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+
+  document.querySelectorAll('.reveal, .tl-item, .project-card, .trip-phase').forEach(el => observer.observe(el));
+
+  // Stagger trip phases
+  document.querySelectorAll('.trip-phase').forEach((el, i) => {
+    el.style.transitionDelay = (i * 0.1) + 's';
+  });
+
+  // Stagger delays
+  document.querySelectorAll('.tl-item').forEach((el, i) => {
+    el.style.transitionDelay = (i * 0.13) + 's';
+  });
+  document.querySelectorAll('.project-card').forEach((el, i) => {
+    el.style.transitionDelay = (i * 0.1) + 's';
+  });
+
+  // ── HERO: dots move only along grid lines (intersection-to-intersection graph) ──
+  const heroFlow = document.getElementById('heroFlow');
+  const heroRoot = document.querySelector('.hero');
+  const GRID_PX = 40;
+  const DOT_COLORS = ['#E8A898', '#C9923A', '#6B3D6B', '#1D6872', '#7DCDC8', '#3D5480'];
+
+  if (heroFlow && heroRoot && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    let dots = [];
+    let W = 0;
+    let H = 0;
+    let lastNow = 0;
+
+    function measureHero() {
+      W = heroRoot.clientWidth;
+      H = heroRoot.clientHeight;
+    }
+
+    function maxGx() { return Math.max(0, Math.floor(W / GRID_PX)); }
+    function maxGy() { return Math.max(0, Math.floor(H / GRID_PX)); }
+
+    function neighbors(ax, ay) {
+      const out = [];
+      if (ax > 0) out.push([-1, 0]);
+      if (ax < maxGx()) out.push([1, 0]);
+      if (ay > 0) out.push([0, -1]);
+      if (ay < maxGy()) out.push([0, 1]);
+      return out;
+    }
+
+    function pickNextB(ax, ay, prevAx, prevAy) {
+      const deltas = neighbors(ax, ay);
+      if (!deltas.length) return [ax, ay];
+      let opts = deltas.map(([dx, dy]) => [ax + dx, ay + dy]);
+      if (opts.length > 1 && prevAx !== null)
+        opts = opts.filter(([bx, by]) => bx !== prevAx || by !== prevAy);
+      if (!opts.length)
+        opts = deltas.map(([dx, dy]) => [ax + dx, ay + dy]);
+      return opts[Math.floor(Math.random() * opts.length)];
+    }
+
+    function initDotPath(d) {
+      const mGx = maxGx();
+      const mGy = maxGy();
+      if (mGx < 1 && mGy < 1) {
+        d.ax = d.bx = 0;
+        d.ay = d.by = 0;
+        d.t = 0;
+        return;
+      }
+      d.ax = Math.floor(Math.random() * (mGx + 1));
+      d.ay = Math.floor(Math.random() * (mGy + 1));
+      const nb = pickNextB(d.ax, d.ay, null, null);
+      d.bx = nb[0];
+      d.by = nb[1];
+      d.t = Math.random();
+      d.speed = 22 + Math.random() * 28;
+    }
+
+    function spawnDot(state) {
+      const el = document.createElement('span');
+      el.className = 'hero-dot';
+      el.style.background = DOT_COLORS[Math.floor(Math.random() * DOT_COLORS.length)];
+      state.el = el;
+      state.popping = false;
+      initDotPath(state);
+      heroFlow.appendChild(el);
+    }
+
+    function buildDots() {
+      measureHero();
+      heroFlow.innerHTML = '';
+      dots = [];
+      const n = Math.min(14, Math.max(6, Math.round((W * H) / 45000)));
+      for (let i = 0; i < n; i++) {
+        const state = { el: null, ax: 0, ay: 0, bx: 0, by: 0, t: 0, speed: 40, popping: false };
+        spawnDot(state);
+        dots.push(state);
+      }
+    }
+
+    function tick(now) {
+      if (!lastNow) lastNow = now;
+      const dt = Math.min(1 / 30, (now - lastNow) / 1000);
+      lastNow = now;
+
+      dots.forEach(d => {
+        if (d.popping) return;
+        d.t += (d.speed * dt) / GRID_PX;
+        while (d.t >= 1) {
+          d.t -= 1;
+          const pax = d.ax;
+          const pay = d.ay;
+          d.ax = d.bx;
+          d.ay = d.by;
+          const next = pickNextB(d.ax, d.ay, pax, pay);
+          d.bx = next[0];
+          d.by = next[1];
+        }
+        const x = (d.ax + (d.bx - d.ax) * d.t) * GRID_PX;
+        const y = (d.ay + (d.by - d.ay) * d.t) * GRID_PX;
+        d.el.style.transform = `translate3d(${x}px, ${y}px, 0)`;
+      });
+      requestAnimationFrame(tick);
+    }
+
+    buildDots();
+    requestAnimationFrame(tick);
+    window.addEventListener('resize', () => {
+      buildDots();
+    }, { passive: true });
+  }
+</script>
+
+</body>
+</html>
